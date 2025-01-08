@@ -1,0 +1,32 @@
+
+
+cd "/mnt/c/Users/HHH/Desktop/files/New folder/mad_2_library/server"
+source ubenv/bin/activate
+python app.py
+
+cd "/mnt/c/Users/HHH/Desktop/files/New folder/mad_2_library/server"
+source ubenv/bin/activate
+redis-server
+
+
+cd "/mnt/c/Users/HHH/Desktop/files/New folder/mad_2_library/server"
+source ubenv/bin/activate
+celery -A tasks.celery worker --loglevel=INFO
+
+
+cd "/mnt/c/Users/HHH/Desktop/files/New folder/mad_2_library/server"
+source ubenv/bin/activate
+MailHog
+
+http://localhost:8025
+
+
+cd "/mnt/c/Users/HHH/Desktop/files/New folder/mad_2_library/server"
+source ubenv/bin/activate
+celery -A tasks.celery beat --loglevel=INFO
+
+cd "C:\Users\HHH\Desktop\files\New folder\mad_2_library\frontend"
+npm run serve
+
+
+

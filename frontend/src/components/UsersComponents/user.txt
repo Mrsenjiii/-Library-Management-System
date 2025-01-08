@@ -1,0 +1,292 @@
+<template>
+  <!-- {{ filters }} -->
+  <!-- Value : {{ productToFilter }} -->
+  <div class="outer-container   my-4">
+
+
+    <div class=" overflow-x-scroll" v-for="category in this.data" :key="category.id">
+      <br>
+      <div class="fluid-container bg-light">
+        <h3> {{ category.name }} </h3>
+      </div>
+
+
+      <!-- 
+      <div class="d-flex flex-nowrap row w-100 p-2 ">
+        <productComponent v-for="product in category.Books" :key="product.id"
+          :noOfproductsInCart="this.cartOfUser[product.product_id] ? parseInt(this.cartOfUser[product.product_id]) : 0"
+          :noOfproductsInCart="this.cartOfUser[product.product_id] ? parseInt(this.cartOfUser[product.product_id]) : 0"
+          :product="product" />
+      </div> -->
+
+
+      <div v-for="product in category.Books" :key="product.id">
+        <!-- {{ product }} -->
+      </div>
+      <div class="d-flex flex-nowrap row w-100 p-2 ">
+        <productComponent v-for="product in category.Books" :key="product.id" :product="product" />
+      </div>
+
+
+    </div>
+
+
+  </div>
+</template>
+
+
+<script>
+// import { ref } from 'vue';
+// import mitt from 'mitt'; // Import mitt library
+
+// import { filters } from '../UsersComponents/storeUser';
+// import { productToFilter } from '../UsersComponents/storeUser';
+
+// import { useRoute } from 'vue-router';
+import productComponent from './components/productComponent.vue';
+
+// // Create a separate eventBus instance using mitt
+// import { eventBus } from '../UsersComponents/userNavbar.vue'
+
+
+export default {
+
+
+  name: 'userProduct',
+
+
+  data() {
+    return {
+      data: null,// kind of product databae
+      // tempData: null,
+      // totalItemsInCart: 0,
+      status: null,
+    };
+  },
+
+
+  components: {
+    productComponent
+  },
+
+
+  created() {
+
+    // eventBus.on('applyAllFilters', this.applyAllFiltersHandler);
+    // eventBus.on('searchForProduct', this.searchForProductHandler);
+
+  },
+
+  
+  methods: {
+
+    async fetchSections() {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/section');
+
+        if (response.ok) {
+          const data = await response.json();
+
+          // const categories = data.categories;
+
+          const productPromises = data.map(async (section) => {
+            try {
+              const bookResponse = await fetch(`http://127.0.0.1:5000/api/section/${section.id}/books`);
+
+              if (bookResponse.ok) {
+
+                const bookData = await bookResponse.json();
+                section['Books'] = bookData.books;
+
+              } else {
+                throw new Error(`Error fetching books for section with ID ${section.id}`);
+              }
+            } catch (error) {
+              console.log(`Error fetching books for section with ID ${section.id}`, error);
+            }
+          });
+        }
+      }
+
+
+
+
+          // applyAllFiltersHandler(payload) {
+          //   console.log('applyAllFilters event received in userProduct', payload);
+          //   console.log(this.data);
+
+          //   if (!this.tempData) {
+          //     this.tempData = JSON.parse(JSON.stringify(this.data));
+          //   }
+
+          //   let filteredData = [...this.tempData];
+
+          //   if (filters.category) {
+          //     const categoryIdToFilter = parseInt(filters.category);
+          //     filteredData = filteredData.filter((category) => parseInt(category.category_id) === categoryIdToFilter);
+          //     console.log(filteredData);
+          //   }
+
+          //   if (filters.priceStart || filters.priceEnd) {
+          //     const priceStartToFilter = parseInt(filters.priceStart) || 0;
+          //     const priceEndToFilter = parseInt(filters.priceEnd) || Infinity;
+
+          //     filteredData = filteredData.filter((category) => {
+          //       const filteredProducts = category.Products.filter((product) => {
+          //         const productPrice = parseInt(product.product_price);
+          //         return (
+          //           !isNaN(productPrice) &&
+          //           productPrice >= priceStartToFilter &&
+          //           productPrice <= priceEndToFilter
+          //         );
+          //       });
+
+          //       category.Products = filteredProducts;
+
+          //       return filteredProducts.length > 0;
+          //     });
+
+          //     console.log(filteredData);
+          //   }
+
+          //   if (filters.exp) {
+          //     const expDateToFilter = new Date(filters.exp);
+
+          //     filteredData = filteredData.filter((category) => {
+          //       const filteredProducts = category.Products.filter((product) => {
+          //         const productExpDate = new Date(product.product_exp);
+
+          //         // Only include products that are not expired
+          //         return productExpDate >= expDateToFilter;
+          //       });
+
+          //       category.Products = filteredProducts;
+
+          //       return filteredProducts.length > 0;
+          //     });
+
+          //     console.log(filteredData);
+          //   }
+
+          //   this.data = filteredData;
+          // },
+
+
+
+
+          // searchForProductHandler(payload) {
+          //   console.log('searchForProduct event received in userProduct', payload);
+          //   // Handle the event in userProduct
+          // },
+
+          // searchForProductHandler(payload) {
+          //   console.log('searchForProduct event received in userProduct', payload);
+          //   console.log(productToFilter.value)
+          //   if (!this.tempData) {
+          //     this.tempData = JSON.parse(JSON.stringify(this.data));
+          //   }
+
+          //   let filteredData = [...this.tempData];
+
+          //   if (productToFilter) {
+          //     const searchTermRegex = new RegExp(productToFilter.value, 'i');
+
+          //     filteredData = filteredData.filter((category) => {
+          //       const filteredProducts = category.Products.filter((product) => {
+          //         return searchTermRegex.test(product.product_name);
+          //       });
+
+          //       category.Products = filteredProducts;
+
+          //       return filteredProducts.length > 0;
+          //     });
+          //   }
+
+          //   this.data = filteredData;
+          // },
+
+
+
+
+
+
+
+
+          //       // Wait for all product promises to settle
+          //       await Promise.all(productPromises);
+          //       // console.log(categories[0].Products.length)
+          //       console.log(data)
+          //       // Filter categories that have products
+          //       const showableData = data.filter(section => section.Books.length > 0);
+          //       // console.log(showableData)
+          //       this.data = showableData; // only those categories will be shown which have products
+
+          //     } else {
+          //       const data = await response.json();
+          //       console.log(data);
+          //     }
+          //   } catch (error) {
+          //     console.log('Error in fetching categories', error);
+          //   }
+          // }
+
+
+
+
+
+
+          //   async getUserCarts(userId) {
+          //     try {
+          //       const url = `http://127.0.0.1:5000/api/carts/${userId}`;
+          //       const response = await fetch(url, {
+          //         method: 'GET',
+          //         headers: {
+          //           'Content-Type': 'application/json',
+          //         },
+          //       });
+
+          //       if (!response.ok && response.status !== 404) {
+          //         // console.log(await response.json());
+          //         throw new Error('Network response was not ok');
+          //       }
+
+          //       const responseData = await response.json();
+          //       this.cartOfUser = responseData.carts;
+          //       sessionStorage.setItem('carts', JSON.stringify(this.cartOfUser));
+          //       return '';
+          //     } catch (error) {
+          //       console.error('Error getting user carts:', error);
+          //       throw error;
+          //     }
+          //   },
+
+          },
+
+        mounted() {
+          this.fetchSections();
+          // this.getUserCarts(this.$route.params.id);
+          // this.getUserCarts(this.$route.params.id);
+        },
+
+
+
+        setup() {
+
+          // const route = useRoute();
+          // console.log(route.name, route.params, 'hello world');
+          // return { filters, productToFilter };
+        } ,
+
+      }
+      
+    }
+
+
+</script>
+
+<style scoped>
+.outer-container {
+  width: 95%;
+  margin: auto;
+}
+</style>
