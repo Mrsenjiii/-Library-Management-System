@@ -168,7 +168,7 @@ The application will be available at:
 
 ## Support
 
-For any issues or questions, please open an issue in the repository or contact your-email@example.com.
+For any issues or questions, please open an issue in the repository or contact rksnsneno@gmail.com.
 
 ## Authors
 
